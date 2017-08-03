@@ -1,0 +1,36 @@
+KPL/PCK
+
+67P/C-G Cheops Radii SPICE PCK File
+===========================================================================
+ 
+     This PCK file contains "Cheops reference frame" radii for comet 
+     67P/Churyumov-Gerasimenko (67P/C-G, NAIF ID 1000012).
+ 
+ 
+Version and Date
+========================================================================
+
+     Version 1.0 -- November 19, 2015 -- Boris Semenov, NAIF/JPL
+ 
+ 
+References
+========================================================================
+ 
+     [1] Scholten, et al, "Reference frames and mapping schemes of
+         comet 67P", v2 (24 September 2015), published in the 67P/C-G
+         shape model PDS data set
+
+
+Radii for Comet 67P/Churyumov-Gerasimenko
+========================================================================
+     
+     The radii below are from page 5 of [1]. They are aligned with the 
+     axes of the "Cheops reference frame".
+ 
+     \begindata
+
+        BODY1000012_RADII           = (   2.40         1.55         1.20   )  
+ 
+     \begintext
+
+End of PCK file.

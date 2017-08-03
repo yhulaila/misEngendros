@@ -1,0 +1,161 @@
+KPL/IK
+
+
+DIM Instrument kernel
+===========================================================================
+
+   This instrument kernel (I-kernel) contains Rosetta Lander Dust
+   Impact Monitor (DIM) detector and field-of-view parameters.
+
+
+Version and Date
+---------------------------------------------------------------------------
+
+   Version 1.0 -- August 21, 2014 -- Maud Barthelemy, ESA/ESAC
+                                     Boris Semenov, JPL
+
+      Initial release.
+
+
+References
+---------------------------------------------------------------------------
+
+   1. Rosetta Frames Definition Kernel (FK), latest version.
+      
+   2. ''Kernel Pool Required Reading''
+   
+   3. http://www.mps.mpg.de/2714344/DIM
+
+
+Implementation Notes
+--------------------------------------------------------
+
+   Applications that need SPICE I-kernel data must load the I-kernel
+   file, normally during program initialization.
+
+   Loading the kernel using the SPICELIB routine FURNSH causes the data
+   items and their associated values present in the kernel to become
+   associated with a data structure called the kernel pool. The
+   application program may then obtain the value(s) for any IK data
+   item using the SPICELIB routines GDPOOL, GIPOOL, GCPOOL. Routine
+   GETFOV may be used if the file contains instrument field-of-view
+   (FOV) specification. See [2] for details.
+
+   This file was created with, and can be updated with a text editor or
+   word processor.
+
+
+Conventions for Specifying Data
+--------------------------------------------------------
+
+   Data items are specified using ``keyword=value'' assignments [1].
+   All keywords referencing values in this I-kernel start with the
+   characters `INS' followed by the NAIF Rosetta instrument ID code,
+   constructed using the spacecraft ID number (-226) followed by the
+   NAIF three digit ID number for DIM P (1 to 7).
+   These IDs are defined in [1] as follows:
+
+               Instrument name          ID
+               --------------------   -------
+               ROS_LANDER_DIM_X       -226830
+               ROS_LANDER_DIM_Y       -226831
+               ROS_LANDER_DIM_Z       -226832
+
+
+   The remainder of the keyword is an underscore character followed by
+   the unique name of the data item. For example, the boresight of
+   the DIM X detector is specified by
+
+               INS-226830_BORESIGHT
+
+   The upper bound on the length of all keywords is 32 characters.
+
+   If a keyword is included in more than one file, or if the same
+   keyword appears more than once within a single file, the last
+   assignment supersedes any earlier assignments.
+
+
+Overview
+--------------------------------------------------------
+
+   From [3]:
+
+     "The Dust Impact Monitor (DIM) on board the lander Philae measures
+      the dust and ice particles escaping from the surface of the
+      comet~s nucleus. These particles are detected when impacting on
+      the surface of the cube-shaped DIM-sensor. DIM is one of three
+      sub-instruments that constitute the instrument package SESAME on
+      board Rosetta~s lander Philae."
+
+     "The cube-shaped DIM-sensor located on the top side of Philae
+      detects with piezoelectric plates the particles impacting from
+      three different directions. In this way it is possible to measure
+      both the particles returning to the surface under the influence
+      of gravity and those ejected directly from the comet~s surface."
+
+
+Mounting Alignment
+--------------------------------------------------------
+
+   Refer to the latest version of the Rosetta Frames Definition Kernel
+   (FK) [1] for the DIM reference frame definitions and mounting
+   alignment information.
+
+
+FOV Definitions
+---------------------------------------------------------------------------
+
+   This section contains definitions for the DIM detector FOVs. These
+   definitions are provided in the format required by the SPICE
+   (CSPICE) function GETFOV (getfov_c).
+ 
+   The DIM detector FOVs are defined with respect to the corresponding
+   ROS_LANDER_DIM_<n> frames to be cones with the half angular extent
+   of 89.9 degrees and the boresight along the +Z axis of the
+   ROS_LANDER_DIM_<n> corresponding frame. These FOV definitions use
+   angular extent style specification.
+
+      \begindata
+
+         INS-226830_FOV_FRAME          = 'ROS_LANDER_DIM_X'
+         INS-226830_FOV_SHAPE          = 'CIRCLE'
+         INS-226830_BORESIGHT          = ( 0.0, 0.0, 1.0 )
+         INS-226830_FOV_CLASS_SPEC     = 'ANGLES'
+         INS-226830_FOV_REF_VECTOR     = ( 1.0, 0.0, 0.0 )
+         INS-226830_FOV_REF_ANGLE      = 89.9
+         INS-226830_FOV_ANGLE_UNITS    = 'DEGREES'
+
+         INS-226831_FOV_FRAME          = 'ROS_LANDER_DIM_Y'
+         INS-226831_FOV_SHAPE          = 'CIRCLE'
+         INS-226831_BORESIGHT          = ( 0.0, 0.0, 1.0 )
+         INS-226831_FOV_CLASS_SPEC     = 'ANGLES'
+         INS-226831_FOV_REF_VECTOR     = ( 1.0, 0.0, 0.0 )
+         INS-226831_FOV_REF_ANGLE      = 89.9
+         INS-226831_FOV_ANGLE_UNITS    = 'DEGREES'
+
+         INS-226832_FOV_FRAME          = 'ROS_LANDER_DIM_Z'
+         INS-226832_FOV_SHAPE          = 'CIRCLE'
+         INS-226832_BORESIGHT          = ( 0.0, 0.0, 1.0 )
+         INS-226832_FOV_CLASS_SPEC     = 'ANGLES'
+         INS-226832_FOV_REF_VECTOR     = ( 1.0, 0.0, 0.0 )
+         INS-226832_FOV_REF_ANGLE      = 89.9
+         INS-226832_FOV_ANGLE_UNITS    = 'DEGREES'
+
+      \begintext
+
+
+Platform ID
+---------------------------------------------------------------------------
+
+   This number is the NAIF instrument ID of the platform on which the
+   detectors are mounted. For all detectors this platform is the lander.
+
+      \begindata
+
+         INS-226830_PLATFORM_ID  = ( -226800 )
+         INS-226831_PLATFORM_ID  = ( -226800 )
+         INS-226832_PLATFORM_ID  = ( -226800 )
+
+      \begintext
+
+End of IK file.

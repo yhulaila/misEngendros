@@ -1,0 +1,725 @@
+KPL/IK
+
+
+CIVA Instrument kernel
+===========================================================================
+
+   This instrument kernel (I-kernel) contains Rosetta Comet Infrared
+   and Visible Analyser (CIVA) optics, detector, and field-of-view
+   parameters - only for the camera part (CIVA-P).
+
+
+Version and Date
+---------------------------------------------------------------------------
+
+   Version 1.0 -- June 12, 2013 -- Maud Barthelemy, ESA/ESAC
+                                   Boris Semenov, JPL
+
+      Initial release.
+
+
+References
+---------------------------------------------------------------------------
+
+   1. Rosetta Frames Definition Kernel (FK), latest version.
+      
+   2. ''Kernel Pool Required Reading''
+   
+   3. CIVA, Bibring, J.-P. and Lamy, P. and Langevin, Y. and Soufflot,
+      A. and Berthe, M. and Borg, J. and Poulet, F. and Mottola, S.
+      (2007) CIVA. Space Science Reviews.
+   
+   4. Summary of CIVA-P Features, LCI-NT-100-001-IAS, March 22nd, 2013
+   
+   5. Rapport de mesure de distorsion geometrique des cameras CIVA-P QM, 
+      N. Charvin, LCI-RP-05203184-IAS, December 12, 2001
+
+   6. Camera Calibration Toolbox for Matlab, by J.Y. Bouguet, Caltech,
+      http://www.vision.caltech.edu/bouguetj/calib_doc/index.html
+
+   7. CIVA, Bibring, J.-P. and Lamy, P. and Langevin, Y. and Soufflot,
+      A. and Berthe, M. and Borg, J. and Poulet, F. and Mottola, S.    
+      Space Science Reviews (2007). Springer. 
+      DOI: 10.1007/s11214-006-9135-5. ISSN 1572-9672."
+
+
+Implementation Notes
+--------------------------------------------------------
+
+   Applications that need SPICE I-kernel data must load the I-kernel
+   file, normally during program initialization.
+
+   Loading the kernel using the SPICELIB routine FURNSH causes the data
+   items and their associated values present in the kernel to become
+   associated with a data structure called the kernel pool. The
+   application program may then obtain the value(s) for any IK data
+   item using the SPICELIB routines GDPOOL, GIPOOL, GCPOOL. Routine
+   GETFOV may be used if the file contains instrument field-of-view
+   (FOV) specification. See [2] for details.
+
+   This file was created with, and can be updated with a text editor or
+   word processor.
+
+
+Conventions for Specifying Data
+--------------------------------------------------------
+
+   Data items are specified using ``keyword=value'' assignments [1].
+   All keywords referencing values in this I-kernel start with the
+   characters `INS' followed by the NAIF Rosetta instrument ID code,
+   constructed using the spacecraft ID number (-226) followed by the
+   NAIF three digit ID number for CIVA P (1 to 7).
+   These IDs are defined in [1] as follows:
+
+               Instrument name          ID
+               --------------------   -------
+               ROS_LANDER_CIVA_P_1    -226801
+               ROS_LANDER_CIVA_P_2    -226802
+               ROS_LANDER_CIVA_P_3    -226803
+               ROS_LANDER_CIVA_P_4    -226804
+               ROS_LANDER_CIVA_P_5    -226805
+               ROS_LANDER_CIVA_P_6    -226806
+               ROS_LANDER_CIVA_P_7    -226807
+
+
+   The remainder of the keyword is an underscore character followed by the
+   unique name of the data item. For example, the focal length of the
+   first CIVA P camera is specified by
+
+               INS-226801_FOCAL_LENGTH
+
+   The upper bound on the length of all keywords is 32 characters.
+
+   If a keyword is included in more than one file, or if the same
+   keyword appears more than once within a single file, the last
+   assignment supersedes any earlier assignments.
+
+
+Overview
+--------------------------------------------------------
+
+   From [3]:
+
+      CIVA is an integrated set of imaging instruments designed to
+      characterize the landing and sampling site, take 360 degrees
+      panoramas as seen from the lander, and image collected samples.
+      It consists of a set of panoramic and stereo cameras, designated
+      CIVA-P, and a microscope camera coupled to an IR spectrometer
+      (CIVA-M) for visible and infrared imaging. The imagers all share
+      a common command and data processing unit. CIVA-P has an angular
+      sampling (IFOV) of 1.1 mrad. Each pixel images a 1mm size feature
+      at the distance of the landing legs and a few metres at the local
+      horizon. The panorama is mapped by 6 identical cameras covering
+      contiguous FOV, with their optical axis 60 deg apart.
+      Stereoscopic capability is provided by an additional camera
+      identical and co-aligned with one of the panoramic cameras, with
+      its optical axis, displaced by 10cm. CIVA-M combines two
+      ultra-compact and miniaturised microscopes, one operating in the
+      visible and one constituting an IR hyperspectral imaging
+      spectrometer: they will characterize, by non-destructive
+      analyses, the texture, the albedo, the molecular and the
+      mineralogical composition of each of the samples provided by the
+      Sample Drill and Distribution (SD2) system. CIVA-M is not
+      described in this Kernel.
+
+   From [4]:
+
+      The detector used for CIVA-P camera is a full frame transfer CCD,
+      with 1024x1024 pixels. The CCD is a Thomson CSF TH7888A. The size
+      of each pixel is 14um x 14um. All CIVA-P cameras are equipped
+      with the same optics designed and manufacturers with the same
+      characteristics.
+      
+      Summary of CIVA-P Characteristics 
+
+         Wavelength range (nm):
+            480-940
+
+        Field of view radius(degrees):
+            +/-35 (along diagonal of the CCD)
+            +/-30 (along X and Y axis of the CCD)
+            
+        Number of pixels:
+            1024 x 1024
+        
+        Pixel Size (micrometer):
+            14 x 14
+
+        Pixel Angular Size (mrad):
+            1.02
+            
+        IFOV (mrad)
+            1.1 
+            
+         Relative aperture (F/Number):
+             F/10
+         
+         Effective Focal length (mm):
+            12.385
+
+         Mass  (g):
+            Single Total Mass            -- 140
+            Stereo Total Mass            -- 490
+            Total Mass (without harness) -- 1190
+            
+         Power consumption (W) - heater not included:
+            Per camera head   -- 1.5
+            
+        
+
+
+Mounting Alignment
+--------------------------------------------------------
+
+   Refer to the latest version of the Rosetta Frames Definition Kernel
+   (FK) [1] for the CIVA reference frame definitions and mounting
+   alignment information.
+
+
+Optical Parameters
+--------------------------------------------------------
+
+   The following CIVA-P optical parameters are included in the data
+   section below, from [3,4]:
+
+      ---------------------------------------------------
+             parameter                   Value
+      ----------------------------------------------------
+      Focal Length, mm                    12.385           
+      Spectral Band, nm                   480-940          
+      f/ratio                             f/10             
+      -----------------------------------------------------
+
+   The F/RATIO and WAVELENGTH_RANGE keywords below provide nominal
+   data.
+ 
+   The FOCAL_LENGTH and FL_UNCERTAINTY keywords below provide actual
+   calibrated values are from [5].
+ 
+   The focal length is provided in mm. The wavelength values are given
+   in nm. The angular size values are given in radians.
+
+      \begindata
+
+         INS-226801_FOCAL_LENGTH       = ( 12.473, 12.477     )
+         INS-226801_FL_UNCERTAINTY     = (  0.039, 0.039      )
+         INS-226801_F/RATIO            = ( 10                 )
+         INS-226801_WAVELENGTH_RANGE   = ( 480, 940           )
+
+         INS-226802_FOCAL_LENGTH       = ( 12.362, 12.371     )
+         INS-226802_FL_UNCERTAINTY     = (  0.032, 0.030      )
+         INS-226802_F/RATIO            = ( 10                 )
+         INS-226802_WAVELENGTH_RANGE   = ( 480, 940           )
+
+         INS-226803_FOCAL_LENGTH       = ( 12.454, 12.467     )
+         INS-226803_FL_UNCERTAINTY     = (  0.028, 0.027      )
+         INS-226803_F/RATIO            = ( 10                 )
+         INS-226803_WAVELENGTH_RANGE   = ( 480, 940           )
+
+         INS-226804_FOCAL_LENGTH       = ( 12.427, 12.431     )
+         INS-226804_FL_UNCERTAINTY     = (  0.044, 0.043      )
+         INS-226804_F/RATIO            = ( 10                 )
+         INS-226804_WAVELENGTH_RANGE   = ( 480, 940           )
+
+         INS-226805_FOCAL_LENGTH       = ( 12.407, 12.412     )
+         INS-226805_FL_UNCERTAINTY     = (  0.024, 0.022      )
+         INS-226805_F/RATIO            = ( 10                 )
+         INS-226805_WAVELENGTH_RANGE   = ( 480, 940           )
+
+         INS-226806_FOCAL_LENGTH       = ( 12.458, 12.454     )
+         INS-226806_FL_UNCERTAINTY     = (  0.023, 0.024      )
+         INS-226806_F/RATIO            = ( 10                 )
+         INS-226806_WAVELENGTH_RANGE   = ( 480, 940           )
+
+         INS-226807_FOCAL_LENGTH       = ( 12.410, 12.404     )
+         INS-226807_FL_UNCERTAINTY     = (  0.022, 0.023      )
+         INS-226807_F/RATIO            = ( 10                 )
+         INS-226807_WAVELENGTH_RANGE   = ( 480, 940           )
+
+      \begintext
+
+
+Field of View and Detector Parameters
+--------------------------------------------------------
+
+   This section provides a diagram illustrating the CIVA-P FOVs in the
+   corresponding reference frames. The circle represents the actual
+   image with respect to the optical area of the CCD (the diagonal
+   angular size is smaller that the square diagonal).
+
+                    1024 pixels    
+                     60 deg         
+                   .---------.
+                .---------------. <-diagonal 70 deg   
+               .|'             `|.   
+              . |'             `| .   
+              | |     +Z        | |   
+   1024 pixels| |       x-------|-|--->  
+     60 deg   | |       |       | |    +X
+              . |       |       | '   
+               \|       |       |/   
+                `---------------'     
+                  `._________.'             
+                        |
+                        |                 +Z is into the page.
+                        V        
+                         +Y         
+
+   The FOV of each CIVA-P camera has the following angular size, in
+   degrees:
+
+        Horizontal    Vertical    Diagonal 
+            60           60         70
+
+   All the CIVA-P cameras use the CCD detector of the same type with
+   the following nominal geometry parameters, from [3,4]:
+
+      ---------------------------------------------------
+             parameter                    Value
+      ----------------------------------------------------
+      Pixel Size (microns)                14 x 14
+      Detector Array Size               1024 x 1024
+      Field of view (deg)                 60 x 60
+      Pixel Angular Size - IFOV (mrad)  1.02 x 1.02
+      -----------------------------------------------------------------
+
+   The IFOV value has been given by doing the following computation:
+
+       IFOV = FOV/PIXEL_NUMBER = 60/1024 degrees = 1.02 mrad
+
+   However, it has been found in [7] that IFOV = 1.1, which could be 
+   the result of the following computation:
+
+       IFOV = PIXEL_SIZE/FOCAL_LENGTH = 0.014/12.385 = 1.13 mrad
+
+   The author of the Kernel is not yet sufficiently informed to give
+   the most relevant value to IFOV.
+
+   Angular size values in the keywords are given in radians. The values
+   are given in microns for PIXEL_SIZE keywords and in counts for
+   PIXEL_SAMPLES, PIXEL_LINES, and CENTER keywords. The convention for
+   the Principal point and CCD center coordinates is that the first
+   pixel center is (1,1) and the last (1024,1024). 
+   The Principal Point (PP) is the intersection of the Principle Axis
+   with the CCD. It does not necessarily match with the CCD center. 
+   
+      \---->---    refracted ray          -
+        \       \                         | \
+         |        \                       |   \   X:PP              
+  -------|-----------------------------------X---------> Principal Axis
+        /        /                        |  x |  x:CCD center
+      / --->----/                         \    |
+  lenses                                    \  |
+
+      \begindata
+
+         INS-226801_PIXEL_SIZE         = ( 14, 14 )
+         INS-226801_PIXEL_SAMPLES      = ( 1024 )
+         INS-226801_PIXEL_LINES        = ( 1024 )
+         INS-226801_CCD_CENTER         = ( 512.5, 512.5 )
+         INS-226801_PRINCIPAL_POINT    = ( 517.897, 514.966 )
+         INS-226801_PP_UNCERTAINTY     = ( 1.332, 1.491 )
+         INS-226801_FOV_ANGULAR_SIZE   = (  1.05, 1.05 )
+         INS-226801_IFOV               = ( 1.02, 1.02   )
+
+         INS-226802_PIXEL_SIZE         = ( 14, 14 )
+         INS-226802_PIXEL_SAMPLES      = ( 1024 )
+         INS-226802_PIXEL_LINES        = ( 1024 )
+         INS-226802_CCD_CENTER         = ( 512.5, 512.5 )
+         INS-226802_PRINCIPAL_POINT    = ( 509.329, 520.471 )
+         INS-226802_PP_UNCERTAINTY     = ( 0.964, 1.307 )
+         INS-226802_FOV_ANGULAR_SIZE   = (  1.05, 1.05 )
+         INS-226802_IFOV               = ( 1.02, 1.02   )
+
+         INS-226803_PIXEL_SIZE         = ( 14, 14 )
+         INS-226803_PIXEL_SAMPLES      = ( 1024 )
+         INS-226803_PIXEL_LINES        = ( 1024 )
+         INS-226803_CCD_CENTER         = ( 512.5, 512.5 )
+         INS-226803_PRINCIPAL_POINT    = ( 525.605, 517.995 )
+         INS-226803_PP_UNCERTAINTY     = ( 1.164, 1.145 )
+         INS-226803_FOV_ANGULAR_SIZE   = (  1.05, 1.05 )
+         INS-226803_IFOV               = ( 1.02, 1.02   )
+
+         INS-226804_PIXEL_SIZE         = ( 14, 14 )
+         INS-226804_PIXEL_SAMPLES      = ( 1024 )
+         INS-226804_PIXEL_LINES        = ( 1024 )
+         INS-226804_CCD_CENTER         = ( 512.5, 512.5 )
+         INS-226804_PRINCIPAL_POINT    = ( 518.676, 516.986 )
+         INS-226804_PP_UNCERTAINTY     = ( 1.188, 1.307 )
+         INS-226804_FOV_ANGULAR_SIZE   = (  1.05, 1.05 )
+         INS-226804_IFOV               = ( 1.02, 1.02   )
+
+         INS-226805_PIXEL_SIZE         = ( 14, 14 )
+         INS-226805_PIXEL_SAMPLES      = ( 1024 )
+         INS-226805_PIXEL_LINES        = ( 1024 )
+         INS-226805_CCD_CENTER         = ( 512.5, 512.5 )
+         INS-226805_PRINCIPAL_POINT    = ( 511.522, 514.158 )
+         INS-226805_PP_UNCERTAINTY     = ( 1.008, 1.278)
+         INS-226805_FOV_ANGULAR_SIZE   = (  1.05, 1.05 )
+         INS-226805_IFOV               = ( 1.02, 1.02   )
+
+         INS-226806_PIXEL_SIZE         = ( 14, 14 )
+         INS-226806_PIXEL_SAMPLES      = ( 1024 )
+         INS-226806_PIXEL_LINES        = ( 1024 )
+         INS-226806_CCD_CENTER         = ( 512.5, 512.5 )
+         INS-226806_PRINCIPAL_POINT    = ( 513.877, 525.522 )
+         INS-226806_PP_UNCERTAINTY     = ( 1.433, 1.112 )
+         INS-226806_FOV_ANGULAR_SIZE   = (  1.05, 1.05 )
+         INS-226806_IFOV               = ( 1.02, 1.02   )
+
+         INS-226807_PIXEL_SIZE         = ( 14, 14 )
+         INS-226807_PIXEL_SAMPLES      = ( 1024 )
+         INS-226807_PIXEL_LINES        = ( 1024 )
+         INS-226807_CCD_CENTER         = ( 512.5, 512.5 )
+         INS-226807_PRINCIPAL_POINT    = ( 497.432, 513.432 )
+         INS-226807_PP_UNCERTAINTY     = ( 1.188, 1.307 )
+         INS-226807_FOV_ANGULAR_SIZE   = (  1.05, 1.05 )
+         INS-226807_IFOV               = ( 1.02, 1.02   )
+
+      \begintext
+
+
+FOV Definitions
+---------------------------------------------------------------------------
+
+   This section contains definitions for the CIVA-P FOVs. These
+   definitions are provided in the format required by the SPICE
+   (CSPICE) function GETFOV (getfov_c).
+
+   The CIVA-P FOVs are defined with respect to the corresponding
+   ROS_LANDER_CIVA_P_<n> frames to be square pyramids with the corners
+   defined by the first and last pixels of the first and last lines of
+   the CCD and the boresight along the +Z axis of the
+   ROS_LANDER_CIVA_P_<n> frame. This FOV definitions use angular extent
+   style specification with the angular size taken from the 'Field of
+   View Parameters' section above.
+
+      \begindata
+
+         INS-226801_FOV_FRAME          = 'ROS_LANDER_CIVA_P_1'
+         INS-226801_FOV_SHAPE          = 'RECTANGLE'
+         INS-226801_BORESIGHT          = ( 0.0, 0.0, 1.0 )
+         INS-226801_FOV_CLASS_SPEC     = 'ANGLES'
+         INS-226801_FOV_REF_VECTOR     = ( 1.0, 0.0, 0.0 )
+         INS-226801_FOV_REF_ANGLE      = 30
+         INS-226801_FOV_CROSS_ANGLE    = 30
+         INS-226801_FOV_ANGLE_UNITS    = 'DEGREES'
+
+         INS-226802_FOV_FRAME          = 'ROS_LANDER_CIVA_P_2'
+         INS-226802_FOV_SHAPE          = 'RECTANGLE'
+         INS-226802_BORESIGHT          = ( 0.0, 0.0, 1.0 )
+         INS-226802_FOV_CLASS_SPEC     = 'ANGLES'
+         INS-226802_FOV_REF_VECTOR     = ( 1.0, 0.0, 0.0 )
+         INS-226802_FOV_REF_ANGLE      = 30
+         INS-226802_FOV_CROSS_ANGLE    = 30
+         INS-226802_FOV_ANGLE_UNITS    = 'DEGREES'
+
+         INS-226803_FOV_FRAME          = 'ROS_LANDER_CIVA_P_3'
+         INS-226803_FOV_SHAPE          = 'RECTANGLE'
+         INS-226803_BORESIGHT          = ( 0.0, 0.0, 1.0 )
+         INS-226803_FOV_CLASS_SPEC     = 'ANGLES'
+         INS-226803_FOV_REF_VECTOR     = ( 1.0, 0.0, 0.0 )
+         INS-226803_FOV_REF_ANGLE      = 30
+         INS-226803_FOV_CROSS_ANGLE    = 30
+         INS-226803_FOV_ANGLE_UNITS    = 'DEGREES'
+
+         INS-226804_FOV_FRAME          = 'ROS_LANDER_CIVA_P_4'
+         INS-226804_FOV_SHAPE          = 'RECTANGLE'
+         INS-226804_BORESIGHT          = ( 0.0, 0.0, 1.0 )
+         INS-226804_FOV_CLASS_SPEC     = 'ANGLES'
+         INS-226804_FOV_REF_VECTOR     = ( 1.0, 0.0, 0.0 )
+         INS-226804_FOV_REF_ANGLE      = 30
+         INS-226804_FOV_CROSS_ANGLE    = 30
+         INS-226804_FOV_ANGLE_UNITS    = 'DEGREES'
+
+         INS-226805_FOV_FRAME          = 'ROS_LANDER_CIVA_P_5'
+         INS-226805_FOV_SHAPE          = 'RECTANGLE'
+         INS-226805_BORESIGHT          = ( 0.0, 0.0, 1.0 )
+         INS-226805_FOV_CLASS_SPEC     = 'ANGLES'
+         INS-226805_FOV_REF_VECTOR     = ( 1.0, 0.0, 0.0 )
+         INS-226805_FOV_REF_ANGLE      = 30
+         INS-226805_FOV_CROSS_ANGLE    = 30
+         INS-226805_FOV_ANGLE_UNITS    = 'DEGREES'
+
+         INS-226806_FOV_FRAME          = 'ROS_LANDER_CIVA_P_6'
+         INS-226806_FOV_SHAPE          = 'RECTANGLE'
+         INS-226806_BORESIGHT          = ( 0.0, 0.0, 1.0 )
+         INS-226806_FOV_CLASS_SPEC     = 'ANGLES'
+         INS-226806_FOV_REF_VECTOR     = ( 1.0, 0.0, 0.0 )
+         INS-226806_FOV_REF_ANGLE      = 30
+         INS-226806_FOV_CROSS_ANGLE    = 30
+         INS-226806_FOV_ANGLE_UNITS    = 'DEGREES'
+
+         INS-226807_FOV_FRAME          = 'ROS_LANDER_CIVA_P_7'
+         INS-226807_FOV_SHAPE          = 'RECTANGLE'
+         INS-226807_BORESIGHT          = ( 0.0, 0.0, 1.0 )
+         INS-226807_FOV_CLASS_SPEC     = 'ANGLES'
+         INS-226807_FOV_REF_VECTOR     = ( 1.0, 0.0, 0.0 )
+         INS-226807_FOV_REF_ANGLE      = 30
+         INS-226807_FOV_CROSS_ANGLE    = 30
+         INS-226807_FOV_ANGLE_UNITS    = 'DEGREES'
+
+      \begintext
+
+
+Optical Distortion
+--------------------------------------------------------
+
+   WARNING: This section is in draft. It will be finalized in a future
+            version of the IK.
+
+   This section provides optical distortion and geometric calibration
+   data for the CIVA-P, from [5].
+
+   CIVA team did some test measurements in 2001 at IAS. They took
+   images of a checkerboard with different angular orientation. The
+   method used was of the corner extraction of the CALIBRATION TOOLBOX,
+   ([6]). 
+
+   After treatment, the following parameters can be determined for each
+   camera:
+
+     - focal distance fc in pixels 
+
+     - Principal point cc
+
+     - distortion coefficients in a 5 field vector kc
+
+     - skew factor, alpha_c, left to its default 0 value.
+
+   The focal distance fc in pixels is given by multiplying the
+   FOCAL_LENGTH - in 'Optical Parameters' section - by 1000 and
+   dividing it by the pixel dimension (14 um).
+
+      fc = FOCAL_LENGTH*1000/14
+
+   Let be P a point in space of coordinate vector XXc (Xc,Yc,Zc) in the
+   camera reference frame. Let us project that point on the image plane
+   according to the intrinsic parameters (fc, cc, alpha_c, kc). xn is
+   the normalized (pinhole) image projection:
+
+      xn = (Xc/Zc,Yc/Zc) = (x,y)
+
+   let 
+
+      r*r=x*x+y*y
+
+   After distortion, the new normalized point coordinate xd is
+
+      xd=(xd(1), xd(2)) = 
+        {1 + kc(1).r^2 + kc(2).r^4 + kc(5).r^6}* xn + dx
+
+   where dx is the tangential distortion vector
+
+      dx = [ 2.kc(3)*x*y+ kc(4)*(r^2+2.x^2) ]
+           [ kc(3)*(r^2+2.y^2) + 2.kc(4)*x*y]
+     
+   The final pixel coordinate x_pixel (xp,yp) is given by
+
+      xp = fc(1)*(xd(1)+alpha_c*xd(2)) + cc(1)
+
+      yp= fc(2)*xd(2) + cc(2)
+
+   Therefore, x_pixel are related to xd by
+
+      [xp]            [xd(1)]
+      [yp] = KK .     [xd(2)]
+      [1 ]            [ 1   ]
+
+   Where KK is the camera matrix
+
+           [ fc(1)  alpha_c*fc(1)  cc(1) ]
+      KK = [  0      fc(2)         cc(2) ]
+           [  0       0              1   ]
+     
+   The kc(n) coefficients are given in the DISTORTION keywords.
+   DISC_UNC keywords are the errors in the estimation of
+   the distortion coefficients.
+   
+   TBD:  need code example showing how to fetch values and compute
+         distortion.
+
+      \begindata
+      
+         INS-226801_DISTORSION  = (  0.00565,
+                                    -0.05355,
+                                    -0.00004,
+                                     0.00049,
+                                     0.00000 )
+
+         INS-226801_DIST_UNC    = (  0.00539,
+                                     0.01864,
+                                     0.00047,
+                                     0.00048,
+                                     0.00000 )
+
+         INS-226802_DISTORSION  = ( -0.00325,
+                                    -0.02591,
+                                     0.00045,
+                                    -0.00122,
+                                     0.00000 )
+
+         INS-226802_DIST_UNC    = (  0.00323,
+                                     0.00854,
+                                     0.00037,
+                                     0.00037,
+                                     0.00000 )
+
+         INS-226803_DISTORSION  = ( -0.01002,
+                                    -0.01210,
+                                     0.00042,
+                                     0.00185,
+                                     0.00000 )
+
+         INS-226803_DIST_UNC    = (  0.00343,
+                                     0.00911,
+                                     0.00035,
+                                     0.00035,
+                                     0.00000 )
+
+
+         INS-226804_DISTORSION  = ( -0.01369,
+                                    -0.00744,
+                                    -0.00029,
+                                     0.00018,
+                                     0.00000 )
+
+         INS-226804_DIST_UNC    = (  0.00412,
+                                     0.01281,
+                                     0.00039,
+                                     0.00040,
+                                     0.00000 )
+
+         INS-226805_DISTORSION  = ( -0.00829,
+                                    -0.01519,
+                                    -0.00054,
+                                     0.00039,
+                                     0.00000 )
+
+         INS-226805_DIST_UNC    = (  0.00384,
+                                     0.01195,
+                                     0.00039,
+                                     0.00039,
+                                     0.00000 )
+
+         INS-226806_DISTORSION  = ( -0.01179,
+                                    -0.00226,
+                                     0.00074,
+                                     0.00172,
+                                     0.00000 )
+
+         INS-226806_DIST_UNC    = (  0.00304,
+                                     0.00765,
+                                     0.00043,
+                                     0.00039,
+                                     0.00000 )
+
+         INS-226807_DISTORSION  = ( -0.01152,
+                                    -0.00237,
+                                     0.00018,
+                                    -0.00146,
+                                     0.00000 )
+
+         INS-226807_DIST_UNC    = (  0.00324,
+                                     0.01010,
+                                     0.00040,
+                                     0.00039,
+                                     0.00000 )
+
+      \begintext
+
+      
+Extrinsic Parameters
+---------------------
+
+   WARNING: This section is in draft. It will be finalized in a future
+            version of the IK.
+
+   The team used the same toolbox to calibrate the stereo cameras.
+
+   The following parameters are estimated:
+
+      - the Rotation vector om
+
+      - the Translation vector T
+
+   The extrinsic parameters are used to estimate the position of the
+   right camera related to the left one.
+
+   If we consider a point P in space, its two coordinate vectors Xl and
+   Xr in the left and right camera frames respectively are related to
+   each other through the rigid motion transformation
+
+      Xr = R*Xl + T
+   
+   where R is the 3*3 rotation matrix corresponding to the vector om. 
+
+   The relation between om and R is given by the rodrigues formula
+
+      R = rodrigues(om)
+
+      R = I.cos(theta) + K.sin(theta)+(1-cos(theta)). KKt
+
+   where:
+
+      I is the identity matrix
+
+      K is the cross product matrix 
+
+      Kt is the matrix transpose 
+
+      K = [ 0  -k3  k2 ]
+          [ k3  0  -k1 ]
+          [-k2  k1  0  ]
+
+   The parameters are given in mm. (position of CH7 right camera wrt
+   CH6 left camera)
+
+   The OM keywords give the OM vector. The uncertainties in the 
+   vector estimation is given in OM_UNC keywords.
+   The T vector is given in the T keyword. The uncertainties in the 
+   vector estimation is given in T_UNC vectors.
+   
+   TBD:   need to augment with code example.
+
+
+      \begindata
+
+         INS-226807_OM     = (  0.00109,
+                               -0.00305,
+                                0.00550 )
+                           
+         INS-226807_OM_UNC = (  0.00188,
+                                0.00176,
+                                0.00015 )
+                               
+         INS-226807_T      = (    2.10740,
+                               -100.21617,
+                                 -0.03749 )
+                              
+         INS-226807_T_UNC  = (  0.61401,
+                                0.62258,
+                                2.01152 )
+
+      \begintext
+
+
+Platform ID
+---------------------------------------------------------------------------
+
+   This number is the NAIF instrument ID of the platform on which the
+   cameras are mounted. For all cameras this platform is the lander.
+
+      \begindata
+
+         INS-226801_PLATFORM_ID  = ( -226800 )
+         INS-226802_PLATFORM_ID  = ( -226800 )
+         INS-226803_PLATFORM_ID  = ( -226800 )
+         INS-226804_PLATFORM_ID  = ( -226800 )
+         INS-226805_PLATFORM_ID  = ( -226800 )
+         INS-226806_PLATFORM_ID  = ( -226800 )
+         INS-226807_PLATFORM_ID  = ( -226800 )
+
+      \begintext
+
+End of IK file.

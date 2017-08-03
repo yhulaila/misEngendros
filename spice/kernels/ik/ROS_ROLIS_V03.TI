@@ -1,0 +1,440 @@
+KPL/IK
+
+ROLIS Camera Instrument kernel
+==============================================================================
+
+   This instrument kernel (I-kernel) contains ROLIS optics, detector,
+   and field-of-view parameters.
+
+
+Version and Date
+------------------------------------------------------------------------------
+
+
+   Version 0.0 -- Feb 14, 2013 -- Stefano Mottola, DLR  
+
+      Initial release.
+
+   Version 0.1 -- Jun 11, 2013 -- Stefano Mottola, DLR  
+
+      First update.
+
+   Version 0.2 -- Jun 17, 2013 -- Stefano Mottola, DLR 
+                                  Boris Semenov, JPL
+
+      Slight updates name/ID for ROLIS ROS_LANDER_ROLIS_* - Added 55.6
+      as FOV (close up mode) in the diagram of Apparent FOV Layout.
+
+   Version 0.3 -- Sep 24, 2014 -- Stefano Mottola, DLR  
+
+      FOV layout corrected. FOV, IFOV and distortion parameters updated.
+      Note on interpretation of the focal length added.
+
+ 
+References
+------------------------------------------------------------------------------
+
+   1. ''Kernel Pool Required Reading''
+
+   2. ''C-kernel Required Reading''
+
+   3. ROLIS EAICD RO-LRS-SP-3030 Issue 1.2 21 Jan 2008.
+   
+   4. ''The ROLIS experiment on the Rosetta Lander'', Mottola et al.,
+      Space Sci Rev., 2007, 128 (1-4), pp. 241-255.
+
+
+Implementation Notes
+------------------------------------------------------------------------------
+
+   Applications that need SPICE I-kernel data must ''load'' the
+   I-kernel file, normally during program initialization.
+ 
+   Loading the kernel using the SPICELIB routine FURNSH causes the data
+   items and their associated values present in the kernel to become
+   associated with a data structure called the ''kernel pool''. The
+   application program may then obtain the value(s) for any IK data
+   item using the SPICELIB routines GDPOOL, GIPOOL, GCPOOL. Routine
+   GETFOV may be used if the file contains instrument field-of-view
+   (FOV) specification. See [1] for details.
+ 
+   This file was created with, and can be updated with a text editor or
+   word processor.
+
+
+Conventions for Specifying Data
+------------------------------------------------------------------------------
+
+   Data items are specified using ''keyword=value'' assignments [1].
+   All keywords referencing values in this I-kernel start with the
+   characters `INS' followed by the NAIF Dawn instrument ID code,
+   constructed using the spacecraft ID number (-XXX) followed by the
+   NAIF three digit ID number.
+
+               Instrument name          ID
+               --------------------   -------
+               ROS_LANDER_ROLIS_IFL   -226810
+               ROS_LANDER_ROLIS_R     -226811
+               ROS_LANDER_ROLIS_G     -226812
+               ROS_LANDER_ROLIS_B     -226813
+               ROS_LANDER_ROLIS_IR    -226814
+
+
+   The remainder of the keyword is an underscore character followed by
+   the unique name of the data item. For example, the f/ratio is
+   specified by
+
+               INS-2268XX_F/RATIO
+
+   The upper bound on the length of all keywords is 32 characters.
+ 
+   If a keyword is included in more than one file, or if the same
+   keyword appears more than once within a single file, the last
+   assignment supersedes any earlier assignments.
+
+
+Overview
+------------------------------------------------------------------------------
+
+   From [3] and [4]:
+
+   The ROLIS descent and close-up imager comprises
+   
+      -  a refractive lens system (one element of which is movable and
+         allows the focus position to be changed between two discrete
+         positions - infinity to 30cm -)
+
+      -  an illumination device consisting of 4 sets of LEDs for
+         post-landing close-up imaging
+
+      -  an Atmel/Thomson TH7888A CCD at the focal plane. The active
+         area of the CCD is sized 1024 x 1024 pixels or 14.34 x 14.34
+         mm (14.00 x 14.00 micron per pixel).
+
+
+Apparent FOV Layout
+------------------------------------------------------------------------------
+
+   This section provides a diagram illustrating the ROLIS apparent FOV
+   layout in the corresponding reference frames.
+
+   Xlnd, Ylnd, Zlnd are the axes of the lander reference system as
+   defined in [3].
+
+   XRolfrm, YRolfrm, ZRolfrm are the axes of the ROLIS frame reference
+   system. Pixel (1,1) is in the lower left corner of the image, and
+   pixel (1024,1024) is in the top right corner.
+   
+   The boresight direction is along -Zlnd and +ZRolfrm and is directed
+   out of the page.
+
+   +Zlnd is directed into the page.
+
+   +ZRolfrm is directed out of the page.
+
+
+                              55.6 deg         
+                         |    56.6 deg (IFL) |       
+                         |<----------------->|      
+                         |                   |      
+                             1024 columns           
+
+                                                  
+   +Ylnd       +Zlnd      +YRolfrm ^
+    <------------x                 |    (1024,1024)
+                 |       +---------|---------+       -----             
+                 |       |         |         |         ^              
+                 |       |         |         |         |              
+                 |       |         |         |         |              
+                 |       |         |         |         | 55.6 deg              
+                 |       |         o------------>      | 56.6 deg (IFL)
+           +Xlnd v       | +ZRolfrm        +XRolfrm    |        
+                         |                   |         | 1024 lines
+                         |                   |         |              
+                         |                   |         v              
+                         +-------------------+       -----             
+                       (1,1)                  
+                             
+
+
+Optical Parameters
+------------------------------------------------------------------------------
+
+   The following ROLIS nominal first order optical parameters are, from
+   [4]:
+
+      ------------------------------------------------------------------
+            parameter                 Infinity mode        Close-up mode
+      ------------------------------------------------------------------
+      Focal Length, mm                    13.3                  13.59
+      f/ratio                             f/5.0                 f/5.0
+      IFOV, rad/pixel                     0.00105               0.00103
+      Field of view, deg                  56.6                  55.6
+      Field of view, rad                  0.988636              0.970726
+      ------------------------------------------------------------------
+
+   Note:  The value listed as Focal Length for the Close-up mode
+          represents in reality the distance between the image plane and 
+          the rear principal point of the optics. This choice has been made
+          in order to allow the programs that automatically compute the
+          FOV from this focal length entry (and that generally assume
+          the object at infinity) to obtain the correct values of the
+          FOV also in close-up mode.
+
+
+   ROLIS optical parameters
+
+      \begindata
+
+         INS-226810_FOCAL_LENGTH       = ( 13.450 )
+         INS-226810_IFOV               = ( 0.00104, 0.00104 )
+         INS-226810_FOV_ANGULAR_SIZE   = ( 0.979297, 0.979297 )
+         INS-226810_F/RATIO            = ( 5.0 )
+
+         INS-226811_FOCAL_LENGTH       = ( 13.530 )
+         INS-226811_IFOV               = ( 0.00103, 0.00103 )
+         INS-226811_FOV_ANGULAR_SIZE   = ( 0.974382, 0.974382 )
+         INS-226811_F/RATIO            = ( 5.0 )
+
+         INS-226812_FOCAL_LENGTH       = ( 13.574 )
+         INS-226812_IFOV               = ( 0.00103, 0.00103 )
+         INS-226812_FOV_ANGULAR_SIZE   = ( 0.971699, 0.971699 )
+         INS-226812_F/RATIO            = ( 5.0 )
+
+         INS-226813_FOCAL_LENGTH       = ( 13.551 )
+         INS-226813_IFOV               = ( 0.00103, 0.00103 )
+         INS-226813_FOV_ANGULAR_SIZE   = ( 0.973100, 0.973100 )
+         INS-226813_F/RATIO            = ( 5.0 )
+
+         INS-226814_FOCAL_LENGTH       = ( 13.541)
+         INS-226814_IFOV               = ( 0.00103, 0.00103 )
+         INS-226814_FOV_ANGULAR_SIZE   = ( 0.973710, 0.973710 )
+         INS-226814_F/RATIO            = ( 5.0 )
+
+      \begintext
+
+
+CCD Parameters
+------------------------------------------------------------------------------
+
+   ROLIS uses a CCD detector with the following nominal geometry
+   parameters, from [4].
+
+      --------------------------------------------
+             parameter                     value  
+      --------------------------------------------
+      Pixel Size, microns                    14.00
+      Detector Array Size                  1024
+      Detector Array Center                 512.5
+      --------------------------------------------
+
+   The values are given in microns for PIXEL_SIZE keywords and in
+   counts for PIXEL_SAMPLES, PIXEL_LINES, and CENTER keywords.
+
+   ROLIS detector
+
+      \begindata
+
+         INS-226810_PIXEL_SIZE         = ( 14.0000, 14.0000 )
+         INS-226810_PIXEL_SAMPLES      = ( 1024             )
+         INS-226810_PIXEL_LINES        = ( 1024             )
+         INS-226810_CCD_CENTER         = ( 512.5,   512.5   )
+
+         INS-226811_PIXEL_SIZE         = ( 14.0000, 14.0000 )
+         INS-226811_PIXEL_SAMPLES      = ( 1024             )
+         INS-226811_PIXEL_LINES        = ( 1024             )
+         INS-226811_CCD_CENTER         = ( 512.5,   512.5   )
+
+         INS-226812_PIXEL_SIZE         = ( 14.0000, 14.0000 )
+         INS-226812_PIXEL_SAMPLES      = ( 1024             )
+         INS-226812_PIXEL_LINES        = ( 1024             )
+         INS-226812_CCD_CENTER         = ( 512.5,   512.5   )
+
+         INS-226813_PIXEL_SIZE         = ( 14.0000, 14.0000 )
+         INS-226813_PIXEL_SAMPLES      = ( 1024             )
+         INS-226813_PIXEL_LINES        = ( 1024             )
+         INS-226813_CCD_CENTER         = ( 512.5,   512.5   )
+
+         INS-226814_PIXEL_SIZE         = ( 14.0000, 14.0000 )
+         INS-226814_PIXEL_SAMPLES      = ( 1024             )
+         INS-226814_PIXEL_LINES        = ( 1024             )
+         INS-226814_CCD_CENTER         = ( 512.5,   512.5   )
+
+      \begintext
+
+
+
+LED Parameters
+------------------------------------------------------------------------------
+
+   This section contains ROLIS LED parameters. The illumination device
+   is used to obtain multi-spectral images when ROLIS is in close-up
+   mode. It consists of an array of 144 LEDs arranged in 36 quadruplets
+   each containing a blue, green, red and near-infrared diode.
+ 
+   During the descent mode (IFL) no illumination device is used and the
+   images are acquired in clear filter, for which the equivalent band
+   center and bandwidth are given.
+ 
+   The following emission band center and band width data are taken
+   from [4]. FWHM is the Full Width at Half Maximum.
+
+      -----------------------------
+      filter      band       FWHM      
+        #        center                
+      -----------------------------
+       IFL        750        400
+        R         645         45         
+        G         540         85        
+        B         475         50         
+        IR        875         85         
+      -----------------------------
+
+   Given below are the center wavelength (BANDCENTER) and the FWHM
+   (BANDWIDTH) for each of the LED bands, all in nm.
+
+ 
+   ROLIS LEDS
+
+      \begindata
+
+         INS-226810_BANDCENTER         = ( 750 )
+         INS-226810_BANDWIDTH          = ( 400 )
+
+         INS-226811_BANDCENTER         = ( 645 )
+         INS-226811_BANDWIDTH          = ( 45  )
+
+         INS-226812_BANDCENTER         = ( 540 )
+         INS-226812_BANDWIDTH          = ( 85 )
+ 
+         INS-226813_BANDCENTER         = ( 475 )
+         INS-226813_BANDWIDTH          = ( 50  )
+ 
+         INS-226814_BANDCENTER         = ( 875 )
+         INS-226814_BANDWIDTH          = ( 85  )
+
+      \begintext
+
+
+FOV Definitions
+------------------------------------------------------------------------------
+
+   This section contains definitions for the ROLIS FOV. These
+   definitions are provided in a format required by the SPICE (CSPICE)
+   function GETFOV (getfov_c).
+   
+   The set of assignments in the data section below defines the ROLIS
+   FOVs with respect to the ROLIS frame to be a rectangle with the
+   corners defined by the first and last pixels of the first and last
+   lines of the CCD and the boresight along the +Z axis. This FOV
+   definition uses the FOV_ANGULAR_SIZE values from the ''Optical
+   Parameters'' section above converted to degrees.
+
+   ROLIS FOV
+
+      \begindata
+
+         INS-226810_FOV_FRAME          = 'ROS_LANDER_ROLIS'
+         INS-226810_FOV_SHAPE          = 'RECTANGLE'
+         INS-226810_BORESIGHT          = ( 0.0, 0.0, 1.0 )
+         INS-226810_FOV_CLASS_SPEC     = 'ANGLES'
+         INS-226810_FOV_REF_VECTOR     = ( 1.0, 0.0, 0.0 )
+         INS-226810_FOV_REF_ANGLE      = ( 28.05480 )
+         INS-226810_FOV_CROSS_ANGLE    = ( 28.05480 )
+         INS-226810_FOV_ANGLE_UNITS    = 'DEGREES'
+  
+         INS-226811_FOV_FRAME          = 'ROS_LANDER_ROLIS'
+         INS-226811_FOV_SHAPE          = 'RECTANGLE'
+         INS-226811_BORESIGHT          = ( 0.0, 0.0, 1.0 )
+         INS-226811_FOV_CLASS_SPEC     = 'ANGLES'
+         INS-226811_FOV_REF_VECTOR     = ( 1.0, 0.0, 0.0 )
+         INS-226811_FOV_REF_ANGLE      = ( 27.91400 )
+         INS-226811_FOV_CROSS_ANGLE    = ( 27.91400 )
+         INS-226811_FOV_ANGLE_UNITS    = 'DEGREES'
+  
+         INS-226812_FOV_FRAME          = 'ROS_LANDER_ROLIS'
+         INS-226812_FOV_SHAPE          = 'RECTANGLE'
+         INS-226812_BORESIGHT          = ( 0.0, 0.0, 1.0 )
+         INS-226812_FOV_CLASS_SPEC     = 'ANGLES'
+         INS-226812_FOV_REF_VECTOR     = ( 1.0, 0.0, 0.0 )
+         INS-226812_FOV_REF_ANGLE      = ( 27.83712 )
+         INS-226812_FOV_CROSS_ANGLE    = ( 27.83712 )
+         INS-226812_FOV_ANGLE_UNITS    = 'DEGREES'
+  
+         INS-226813_FOV_FRAME          = 'ROS_LANDER_ROLIS'
+         INS-226813_FOV_SHAPE          = 'RECTANGLE'
+         INS-226813_BORESIGHT          = ( 0.0, 0.0, 1.0 )
+         INS-226813_FOV_CLASS_SPEC     = 'ANGLES'
+         INS-226813_FOV_REF_VECTOR     = ( 1.0, 0.0, 0.0 )
+         INS-226813_FOV_REF_ANGLE      = ( 27.87726 )
+         INS-226813_FOV_CROSS_ANGLE    = ( 27.87726 )
+         INS-226813_FOV_ANGLE_UNITS    = 'DEGREES'
+  
+         INS-226814_FOV_FRAME          = 'ROS_LANDER_ROLIS'
+         INS-226814_FOV_SHAPE          = 'RECTANGLE'
+         INS-226814_BORESIGHT          = ( 0.0, 0.0, 1.0 )
+         INS-226814_FOV_CLASS_SPEC     = 'ANGLES'
+         INS-226814_FOV_REF_VECTOR     = ( 1.0, 0.0, 0.0 )
+         INS-226814_FOV_REF_ANGLE      = ( 27.89474 )
+         INS-226814_FOV_CROSS_ANGLE    = ( 27.89474 )
+         INS-226814_FOV_ANGLE_UNITS    = 'DEGREES'
+    
+      \begintext
+
+
+Optical Distortion
+------------------------------------------------------------------------------
+
+   This section provides optical distortion and geometric calibration
+   data for ROLIS.
+ 
+   A 3d vector (P) in the camera frame is mapped into sample and line
+   (S,L) coordinates in pixels through these equations:
+
+          ( X )    FL    ( P(1) )
+          (   ) = ------ (      )
+          ( Y )   P(3)   ( P(2) )
+
+   where X and Y are the horizontal and vertical distance in
+   millimeters from the center of the CCD. The X and Y directions are
+   defined in the ''Apparent FOV Layout'' section. FL is the focal
+   length in millimeters.
+  
+            R*R = X*X + Y*Y
+          
+          ( dX )      ( X*R*R )
+          (    ) = E1 (       ) 
+          ( dY )      ( Y*R*R )
+
+          ( S )   ( Kx  0  ) ( X + dX )   ( S0 )
+          (   ) = (        ) (        ) + (    )
+          ( L )   ( 0   Ky ) ( Y + dY )   ( L0 )
+
+   S0 and L0 refer to the position of the optical axis on the CCD in
+   pixels, and are equal to the elements of the CCD_CENTER keyword
+   defined in the ''CCD Parameters'' section. The constants Kx and Ky
+   map millimeters to pixels in the focal plane X and Y directions.
+   They are identical to the inverse of the pixel size in millimeters
+   in the X and Y directions. The pixel size in microns is defined by
+   the PIXEL_SIZE keyword in the ''CCD Parameters'' section. E1 is the
+   first radial distortion coefficient. It is a function of wavelength,
+   and as such different for each filter. It has units of 1/(mm*mm).
+
+   ROLIS distortion
+
+      \begindata
+      
+         INS-226810_RAD_DIST_COEFF     = ( -4.9543E-5 )
+
+         INS-226811_RAD_DIST_COEFF     = ( -1.1214E-5 )
+
+         INS-226812_RAD_DIST_COEFF     = ( -3.5847E-5 )
+
+         INS-226813_RAD_DIST_COEFF     = ( -3.2937E-5 )
+
+         INS-226814_RAD_DIST_COEFF     = ( -1.1819E-5 )
+
+      \begintext
+
+
+End of IK file.

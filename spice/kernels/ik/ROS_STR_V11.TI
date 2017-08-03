@@ -1,0 +1,354 @@
+KPL/IK
+
+Star Tracker Instrument kernel
+===========================================================================
+
+   This instrument kernel (I-kernel) contains Rosetta Star Trackers (STR)
+   optics, detector, and field-of-view parameters.
+
+
+Version and Date
+---------------------------------------------------------------------------
+
+   Version 1.1 -- April 4, 2016  -- Marc Costa, ESA/ESAC
+
+      Updated documentation and corrected FOV definitions. 
+      Added Overview section, Optical and CCD parameters.
+
+   Version 1.0 -- November 24, 2015 -- Bjorn Grieger, ESA/ESAC
+                                       Boris Semenov, JPL
+
+      Initial release.
+
+
+References
+---------------------------------------------------------------------------
+
+   1. Rosetta Frames Definition Kernel (FK), latest version.
+      
+   2. ''Kernel Pool Required Reading''
+   
+   3. Draft Star Tracker IK by Bjorn Grieger, ROS_STR_V00.TI, 
+      November 24, 2015
+
+   4. Rosetta Autonomous Star Tracker Design Description,
+      Galileo Avionica, RO-GAL-RP-2013, Issue 4, January 2002 
+
+   5. Rosetta Star Traker (STR) User's Manual,
+      Galielo Avionica, RO-GAL-MA-2009, Issue 1, January 2002
+
+   6. Star Tracker Discussion Material presentation at Rosetta SWT41,
+      Bernhard Geiger, RO-SGS-HO-1292, Issue 2, June 2015
+
+
+Implementation Notes
+---------------------------------------------------------------------------
+
+   Applications that need SPICE I-kernel data must load the I-kernel
+   file, normally during program initialization.
+
+   Loading the kernel using the SPICELIB routine FURNSH causes the data
+   items and their associated values present in the kernel to become
+   associated with a data structure called the kernel pool. The
+   application program may then obtain the value(s) for any IK data
+   item using the SPICELIB routines GDPOOL, GIPOOL, GCPOOL. Routine
+   GETFOV may be used if the file contains instrument field-of-view
+   (FOV) specification. See [2] for details.
+
+   This file was created with, and can be updated with a text editor or
+   word processor.
+
+
+Conventions for Specifying Data
+---------------------------------------------------------------------------
+
+   Data items are specified using ``keyword=value'' assignments [1].
+   All keywords referencing values in this I-kernel start with the
+   characters `INS' followed by the NAIF Rosetta instrument ID code.
+   The Star Tracker instrument IDs are defined in [1] as follows:
+
+               Instrument name          ID
+               --------------------   -------
+               ROS_STR-A              -226080
+               ROS_STR-B              -226090
+
+
+   The remainder of the keyword is an underscore character followed by
+   the unique name of the data item. For example, the boresight of
+   the Star Tracker A (STR-A) is specified by
+
+               INS-226080_BORESIGHT
+
+   The upper bound on the length of all keywords is 32 characters.
+
+   If a keyword is included in more than one file, or if the same
+   keyword appears more than once within a single file, the last
+   assignment supersedes any earlier assignments.
+
+
+Overview
+---------------------------------------------------------------------------
+      
+   From [4,5]:
+
+      The Autonomous Star Tracker (STR) is an equipment whose function is 
+      to provide optical measurements to support navigation and attitude 
+      measurements throughout the Rosetta spacecraft mission. The STR is 
+      identified as a unit being part of the Rosetta Avionics.
+      The main task of the STR is to determine autonomously and provide 
+      the Avionics Interface Unit (AIU) with the attitude parameters 
+      without a priori knowledge from other sensor or attitude 
+      determination algorithms outside the STR.
+
+      Each STR system consists of:
+         STR-OH/BAF : Star Tracker Integrated Optical Head and Baffle
+         CAM/STR-EU : Common Navigation Camera and Star Tracker Electronic 
+                      Unit
+      
+      The Optical Head with a Baffle integrated in front of the OH Optics 
+      composes the STR-OH/BAF.
+
+      The Optical Head contains the optical system, the CCD detector and 
+      heater control, all the analogue electronics required to operate 
+      the CCD, correlated double sampling amplifier and A/D converter. 
+      The optical system images the area of the sky to which the sensor is 
+      pointing to. The digital video signals of the pixels of selected 
+      windows (up to 10) within the CCD are transmitted to the electronic 
+      unit to be processed. All the logic functions needed in the optical 
+      head are implemented via ASIC; these functions include also the CCD 
+      timing control and the digital data and command I/F's of the OH with 
+      the EU.
+
+      The Baffle provides an appropriate protection against straylight 
+      produced by the sun and other planets and by the satellite itself. 
+      This protection allows the tracking of faint targets. The baffle is 
+      directly attached to the Optical Head structure to provide a good 
+      alignment with the STR optics.
+
+      Summary of STR Characteristics (same for STR-A and B)
+
+         Wavelength range (nm):
+            500 - 850
+
+         Field of view (degrees):
+            16.47
+
+         Number of pixels:
+            1024 x 1024
+
+         Pixel Size (micrometer):
+            13
+
+         Pixel Angular Size (arcsec):
+            57.9
+
+         Aperture (mm):
+            29
+
+         Relative aperture (F/Number):
+            F/1.5
+
+         Effective Focal length (mm):
+            46
+
+         Dimension LxWxH (mm):
+            STR-OH/BAF          -- 502x229x197
+            CAM/STR-EU          -- 264x187x79
+
+         Mass (kg):
+            STR-OH/BAF          -- 4.76
+            CAM/STR-EU          -- 2.700
+
+         Power consumption (W):
+            16.8
+
+
+Apparent FOV Layout
+---------------------------------------------------------------------------
+
+   This section provides a diagram illustrating the STR-A and STR-B
+   apparent FOVs layout in the corresponding reference frames.
+
+                                  ^ +Xstr-a
+                                  |    
+                                  |
+       ---              +---------|---------+
+        ^               |         |         |
+        | 16.47 deg     |         |         |
+        |               |         |         |
+        |               |         |         |
+        |         1024  |         x-------------> +Ystr-a
+        |         lines |       +Zstr-a     |        (-Zsc)
+        |               |                   |
+        |               |                   |
+        V               |                   |
+       ---      Pixel (0,0)-----------------+
+                           1024 pixels/line
+
+                        |   16.47 deg       |      Boresight (+Zstr-a)
+                        |<----------------->|       is into the page
+                        |                   |
+
+   The STR-A frame is nominally rotated from the s/c frame first by -90
+   degrees about X, then by -75 degrees about Y. 
+
+                                  ^ +Xstr-b
+                                  |    
+                                  |
+       ---              +---------|---------+
+        ^               |         |         |
+        | 16.47 deg     |         |         |
+        |               |         |         |
+        |               |         |         |
+        |         1024  |         x-------------> +Ystr-b
+        |         lines |       +Zstr-b     |        (+Zsc)
+        |               |                   |
+        |               |                   |
+        V               |                   |
+       ---      Pixel (0,0)-----------------+
+                           1024 pixels/line
+
+                        |   16.47 deg       |      Boresight (+Zstr-b)
+                        |<----------------->|       is into the page
+                        |                   |
+
+   The STR-B frame is nominally  rotated from the s/c frame first by +90 
+   degrees about X, then by -75 degrees about Y, then by +10 degrees 
+   about X.
+
+   According to the chosen convention the pixel coordinates start with
+   zero in the lower left corner in the orientation shown in the sketch
+   above. The orientation of the +Xstr and +Ystr axes is such that line
+   and column number counts increase with increasing coordinate value.
+
+
+Mounting Alignment
+---------------------------------------------------------------------------
+
+   Refer to the latest version of the Rosetta Frames Definition Kernel
+   (FK) [1] for the Star Tracker reference frame definitions and
+   mounting alignment information.
+
+
+Optical Parameters
+---------------------------------------------------------------------------
+
+   The following STR optical parameters are included in 
+   the data section below, from [4,5]:
+
+      -----------------------------------------------------------------
+       Parameter                               
+      -----------------------------------------------------------------
+      Focal Length, mm                              46
+      f/ratio                                       1.5  
+      Field of view (deg)
+          along Xstr                                16.47
+          along Ystr                                16.47
+      Pixel Angular Size (arcsec)                   57.9
+      -----------------------------------------------------------------
+
+   The keywords below provide nominal data for both cameras. Angular size
+   values in the keywords are given in radians, with the Xstr size being
+   the first value and the Ystr size being the second value in each pair.
+
+      \begindata
+
+         INS-226170_FOCAL_LENGTH       = ( 46                   )
+         INS-226170_F/RATIO            = ( 1.5                  )
+         INS-226170_FOV_ANGULAR_SIZE   = (   0.287456, 0.287456 )
+         INS-226170_IFOV               = (   0.0002807          )
+
+         INS-226180_FOCAL_LENGTH       = ( 46                   )
+         INS-226180_F/RATIO            = ( 1.5                  )
+         INS-226180_FOV_ANGULAR_SIZE   = (   0.287456, 0.287456 )
+         INS-226180_IFOV               = (   0.0002807          )
+
+      \begintext
+
+
+CCD Parameters
+---------------------------------------------------------------------------
+
+   The STR A and B use the CCD detector of the same type with the 
+   following nominal geometry parameters, from [4,5]:
+
+      -----------------------------------------------------------------
+             parameter                     value      note
+      -----------------------------------------------------------------
+      Pixel Size, microns
+          along Xstr                       13
+          along Ystr                       13
+      Detector Array Size
+          along Xstr                       1024
+          along Ystr                       1024
+      -----------------------------------------------------------------
+
+   The values are given in microns for PIXEL_SIZE keywords and in counts
+   for PIXEL_SAMPLES, PIXEL_LINES, and CENTER keywords.
+
+      \begindata
+
+         INS-226170_PIXEL_SIZE         = ( 13, 13 )
+         INS-226170_PIXEL_SAMPLES      = ( 1024 )
+         INS-226170_PIXEL_LINES        = ( 1024 )
+         INS-226170_CCD_CENTER         = ( 511, 511 )
+
+         INS-226180_PIXEL_SIZE         = ( 13, 13 )
+         INS-226180_PIXEL_SAMPLES      = ( 1024 )
+         INS-226180_PIXEL_LINES        = ( 1024 )
+         INS-226180_CCD_CENTER         = ( 511, 511 )
+
+      \begintext
+
+
+FOV Definitions
+---------------------------------------------------------------------------
+
+   This section contains definitions for the Star Tracker FOVs. These
+   definitions are provided in the format required by the SPICE
+   (CSPICE) function GETFOV (getfov_c).
+ 
+   As in [3] the Star Tracker detector FOVs are defined with respect to
+   the corresponding Star Tracker frames to be squares with the half
+   angular extent of 8.235 degrees and the boresights along the +Z axes
+   of the corresponding frames. These FOV definitions use angular extent
+   style specification.
+
+      \begindata
+
+         INS-226080_FOV_FRAME                 = 'ROS_STR-A'
+         INS-226080_FOV_SHAPE                 = 'RECTANGLE'
+         INS-226080_BORESIGHT                 = ( 0.0     0.0    46.0 )
+         INS-226080_FOV_CLASS_SPEC            = 'ANGLES'
+         INS-226080_FOV_REF_VECTOR            = ( 1.0     0.0     0.0 )
+         INS-226080_FOV_REF_ANGLE             = ( 8.235 )
+         INS-226080_FOV_CROSS_ANGLE           = ( 8.235 )
+         INS-226080_FOV_ANGLE_UNITS           = 'DEGREES'
+
+         INS-226090_FOV_FRAME                 = 'ROS_STR-B'
+         INS-226090_FOV_SHAPE                 = 'RECTANGLE'
+         INS-226090_BORESIGHT                 = ( 0.0     0.0    46.0 )
+         INS-226090_FOV_CLASS_SPEC            = 'ANGLES'
+         INS-226090_FOV_REF_VECTOR            = ( 1.0     0.0     0.0 )
+         INS-226090_FOV_REF_ANGLE             = ( 8.235 )
+         INS-226090_FOV_CROSS_ANGLE           = ( 8.235 )
+         INS-226090_FOV_ANGLE_UNITS           = 'DEGREES'
+
+      \begintext
+
+
+Platform ID
+---------------------------------------------------------------------------
+
+   This number is the NAIF instrument ID of the platform on which the
+   detectors are mounted. For both Star Trackers this platform is the
+   orbiter.
+
+      \begindata
+
+         INS-226080_PLATFORM_ID               = ( -226000 )
+         INS-226090_PLATFORM_ID               = ( -226000 )
+
+      \begintext
+
+End of IK file.
