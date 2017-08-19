@@ -205,8 +205,3 @@ exit(0)
 # v1 2017-02-08 First Release
 
 # v2 2017-03-06 defined spicesync as a function with the config file as in input
-
-getMK(server, serverPath)
-parseFileList(lines)
-doSync(fileList, localPath, remotePath)
-updateMK(destDir, kernel)

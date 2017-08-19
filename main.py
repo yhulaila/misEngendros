@@ -1,9 +1,10 @@
 from functions.localmax import take_points
-from mytest import readpds
-from spice.spicesync import *
+from functions.parsing import readpds
+import numpy as np
 
-a=take_points('richy',2,1)
-print (a, type(a))
 
-readpds('test.IMG')
+image = readpds('test.IMG')
+print ('Image read and charged in memory as', type(image))
 
+#image.shape = (4194304)
+stars = take_points(image)
