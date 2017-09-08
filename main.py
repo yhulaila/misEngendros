@@ -1,10 +1,18 @@
 from functions.localmax import take_points
 from functions.parsing import readpds
-import numpy as np
+from functions.clean_values import clean_image
+from functions.check_image import check_image
 
 
 image = readpds('test.IMG')
-print ('Image read and charged in memory as', type(image))
+image = clean_image(image)
+print ('Image clean from nan values and charged in memory as', type(image[0]), image[0].shape )
+count = image[1]
+image = image[0]
+print ('number of nan values found = ', count)
+print ('##############           Module clean_image executed                       #####################')
 
-#image.shape = (4194304)
 stars = take_points(image)
+
+#print ('estrellitas obtenidas', type(stars), stars)
+print ('##############           Module take_points executed                       #####################')

@@ -3,9 +3,11 @@ import matplotlib.pyplot as plt
 import skimage.morphology as morph
 import skimage.exposure as skie
 import sys
+from functions.parsing import readpds
 
-def take_points(img):
-    #prep file scikit-image environment and plotting
+image = readpds('test.IMG')
+
+def check_image(img):
     #limg = np.arcsinh(img)
     limg = img
     #limg = limg / limg.max()
@@ -18,10 +20,10 @@ def take_points(img):
     #            count2 = count2 + 1
     #print ('total nan values en limg =', count2)
 
-    low = np.percentile(limg, 0.25)
-    high = np.percentile(limg, 99.5)
-    opt_img = skie.exposure.rescale_intensity(limg, in_range=(low, high))
-    #opt_img = limg
+    #low = np.percentile(limg, 0.25)
+    #high = np.percentile(limg, 99.5)
+    #opt_img = skie.exposure.rescale_intensity(limg, in_range=(low, high))
+    opt_img = limg
     #calculating local maxima and filtering out noise
     lm = morph.local_maxima(limg)
     x1, y1, = np.where(lm.T == True)
@@ -49,5 +51,7 @@ def take_points(img):
     ax2.xaxis.set_visible(False)
     ax2.yaxis.set_visible(False)
 
-    fig.savefig('local_max_points.jpg', bbox_inches='tight')
+    plt.show()
+    #fig.savefig('local_max_points.jpg', bbox_inches='tight')
 
+check_image(image)
