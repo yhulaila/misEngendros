@@ -1,8 +1,6 @@
-from functions.localmax import take_points
+from functions.algorithms.localmax import take_points
 from functions.parsing import readpds
-from functions.clean_values import clean_image
-from functions.check_image import check_image
-
+from functions.parsing.clean_values import clean_image
 
 image = readpds('test.IMG')
 image = clean_image(image)

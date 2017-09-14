@@ -1,6 +1,7 @@
 import numpy as np
 import scipy.ndimage as ndimage
-from localmax import take_points
+
+from algorithms.localmax import take_points
 
 # generating data points with a non uniform background
 x = np.random.uniform(low=0, high=200, size=20).astype(int)
