@@ -1,8 +1,13 @@
+import sys
+
+sys.path.insert(0, '/mnt/PhD/functions/algorithms')
+sys.path.insert(0, '/mnt/PhD/functions/parsing')
+
 import numpy as np
 from parsing import readpds
 
 image = readpds('../test.IMG')
-
+print (type(image))
 arr = np.zeros((1,2048,2048))
 
 print (image.shape)

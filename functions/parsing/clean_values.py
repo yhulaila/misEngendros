@@ -6,7 +6,6 @@ def clean_image(img):
 
     count = 0
     img2 = np.empty((2048,2048))
-
     for i in range(0, len(img[0, 0])):
         for j in range(0, len(img[0, 0])):
             if np.isnan(img[0, i, j]):

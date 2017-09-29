@@ -12,5 +12,9 @@ file =  open('data/list.txt')
 print(file)
 file = file.readlines()
 for line in file:
-    image = readpds(line)
-    print(line, 'read')
+    route1 = str('data/'+line)
+    print (route1)
+    route2 = 'cache' + str(route1[4:31]) + '.txt'
+    print (route2)
+    image = readpds(route1)
+    image = clean_image(image)

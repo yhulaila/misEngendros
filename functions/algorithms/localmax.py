@@ -18,36 +18,41 @@ def take_points(img):
     #            count2 = count2 + 1
     #print ('total nan values en limg =', count2)
 
-    low = np.percentile(limg, 0.25)
-    high = np.percentile(limg, 99.5)
+    low = np.percentile(limg, 0.35)
+    high = np.percentile(limg, 93.5)
     opt_img = skie.exposure.rescale_intensity(limg, in_range=(low, high))
     #opt_img = limg
     #calculating local maxima and filtering out noise
     lm = morph.local_maxima(limg)
     x1, y1, = np.where(lm.T == True)
     v = limg[( y1, x1)]
-    lim = 0.5
+    lim = 0.99
     x2, y2 = x1[v > lim], y1[v > lim]
 
     # Creating figure to show local maximum detection
     # rate success
-    fig = plt.figure(figsize=(32, 16))
-    fig.subplots_adjust(hspace=0.05, wspace=0.05)
+    #fig = plt.figure(figsize=(32, 16))
+    #fig.subplots_adjust(hspace=0.05, wspace=0.05)
 
-    ax1 = fig.add_subplot(121)
-    ax1.imshow(img)
-    ax1.set_xlim(0, img.shape[1])
-    ax1.set_ylim(0, img.shape[0])
-    ax1.xaxis.set_visible(False)
-    ax1.yaxis.set_visible(False)
+    #ax1 = fig.add_subplot(121)
+    #ax1.imshow(img)
+    #ax1.set_xlim(0, img.shape[1])
+    #ax1.set_ylim(0, img.shape[0])
+    #ax1.xaxis.set_visible(False)
+    #ax1.yaxis.set_visible(False)
 
-    ax2 = fig.add_subplot(122)
-    ax2.imshow(opt_img)
-    ax2.scatter(x2, y2, facecolor='#FF7000', edgecolor='#FF7000')
-    ax2.set_xlim(0, img.shape[1])
-    ax2.set_ylim(0, img.shape[0])
-    ax2.xaxis.set_visible(False)
-    ax2.yaxis.set_visible(False)
+    #ax2 = fig.add_subplot(122)
+    #ax2.imshow(opt_img)
+    #ax2.scatter(x2, y2, facecolor='#FF7000', edgecolor='#FF7000')
+    #ax2.set_xlim(0, img.shape[1])
+    #ax2.set_ylim(0, img.shape[0])
+    #ax2.xaxis.set_visible(False)
+    #ax2.yaxis.set_visible(False)
 
-    fig.savefig('local_max_points.jpg', bbox_inches='tight')
+    #fig.savefig('local_max_points.jpg', bbox_inches='tight')
+    stars=[]
+    if len(x2) == len(y2):
+        for i in range(0,len(x2)):
+            stars = np.append(stars, [x2[i], y2[i]])
+    return stars
 
